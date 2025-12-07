@@ -486,8 +486,6 @@ end
                 end
 
                 function sector.element(type, text, data, callback, c_flag)
-                    local element_type = type
-                    local type_func = _G.type
                     text, data, callback = text and text or type, data and data or {}, callback and callback or function() end
 
                     local value = {}
@@ -500,12 +498,7 @@ end
                         callback(value)
                     end
 
-                    local default
-                    if type_func(data) == "table" then
-                        default = data.default
-                    else
-                        default = nil
-                    end
+                    local default = data.default and data.default
 
                     local element = {}
 
@@ -513,19 +506,10 @@ end
                         return value
                     end
 
-                    if element_type == "Toggle" then
+                    if type == "Toggle" then
                         Border.Size = Border.Size + UDim2.new(0, 0, 0, 18)
 
-                        -- Handle toggle default: can be boolean directly or in table
-                        local toggleDefault = false
-                        if type_func(data) == "boolean" then
-                            toggleDefault = data
-                        elseif type_func(data) == "table" and data.Toggle ~= nil then
-                            toggleDefault = data.Toggle
-                        elseif default and type_func(default) == "table" then
-                            toggleDefault = default.Toggle or false
-                        end
-                        value = {Toggle = toggleDefault}
+                        value = {Toggle = default and default.Toggle or false}
 
                         local ToggleButton = library:create("TextButton", {
                             Name = "Toggle",
@@ -1088,7 +1072,7 @@ end
 
                             return color
                         end
-                    elseif element_type == "Dropdown" then
+                    elseif type == "Dropdown" then
                         Border.Size = Border.Size + UDim2.new(0, 0, 0, 45)
 
                         value = {Dropdown = default and default.Dropdown or data.options[1]}
@@ -1294,7 +1278,7 @@ end
                             end
                         end
                         element:set_value(value, true)
-                    elseif element_type == "Combo" then
+                    elseif type == "Combo" then
                         Border.Size = Border.Size + UDim2.new(0, 0, 0, 45)
 
                         value = {Combo = default and default.Combo or {}}
@@ -1553,7 +1537,7 @@ end
                             end
                         end
                         element:set_value(value, true)
-                    elseif element_type == "Button" then
+                    elseif type == "Button" then
                         Border.Size = Border.Size + UDim2.new(0, 0, 0, 30)
 
                         local ButtonFrame = library:create("Frame", {
@@ -1588,7 +1572,7 @@ end
                             library:tween(Button, TweenInfo.new(0.6, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {BorderColor3 = Color3.fromRGB(0, 0, 0)})
                             do_callback()
                         end)
-                    elseif element_type == "TextBox" then
+                    elseif type == "TextBox" then
                         Border.Size = Border.Size + UDim2.new(0, 0, 0, 30)
 
                         value = {Text = data.default and data.default or ""}
@@ -1662,7 +1646,7 @@ end
                             end
                         end
                         element:set_value(value, true)
-                    elseif element_type == "Scroll" then
+                    elseif type == "Scroll" then
                         local scrollsize = data.scrollsize and data.scrollsize or 5
 
                         Border.Size = Border.Size + UDim2.new(0, 0, 0, scrollsize * 20 + 10)
@@ -1884,12 +1868,12 @@ end
                             end
                         end
                         element:set_value(value, true)
-                    elseif element_type == "Slider" then
+                    elseif type == "Slider" then
                         Border.Size = Border.Size + UDim2.new(0, 0, 0, 35)
 
-                        value = {Slider = (default and type_func(default) == "table" and default.default) or 0}
+                        value = {Slider = default and default.default or 0}
 
-                        local min, max = (default and type_func(default) == "table" and default.min) or 0, (default and type_func(default) == "table" and default.max) or 100
+                        local min, max = default and default.min or 0, default and default.max or 100
 
                         local Slider = library:create("Frame", {
                             Name = "Slider",
