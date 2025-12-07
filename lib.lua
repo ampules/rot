@@ -27,7 +27,7 @@ function library:console(func)
     func(("\n"):rep(57))
 end
 
-library.signal = loadstring(game:HttpGet("https://raw.githubusercontent.com/ampules/rot/refs/heads/main/signal.luae"))()
+library.signal = loadstring(game:HttpGet("https://raw.githubusercontent.com/Quenty/NevermoreEngine/version2/Modules/Shared/Events/Signal.lua"))()
 
 local local_player = game:GetService("Players").LocalPlayer
 local mouse = local_player:GetMouse()
@@ -144,6 +144,18 @@ function library.new(library_title, cfg_location)
 		syn.protect_gui(ScreenGui)
 	end
 
+    local Cursor = library:create("ImageLabel", {
+        Name = "Cursor",
+        BackgroundTransparency = 1,
+        Size = UDim2.new(0, 17, 0, 17),
+        Image = "rbxassetid://7205257578",
+        ZIndex = 6969,
+    }, ScreenGui)
+
+    rs.RenderStepped:Connect(function()
+        Cursor.Position = UDim2.new(0, mouse.X, 0, mouse.Y + 36)
+    end)
+
 	ScreenGui.Parent = game:GetService("CoreGui")
 
     function menu.IsOpen()
@@ -158,6 +170,11 @@ function library.new(library_title, cfg_location)
 
 		ScreenGui.Enabled = not ScreenGui.Enabled
         menu.open = ScreenGui.Enabled
+
+        while ScreenGui.Enabled do
+            uis.MouseIconEnabled = true
+            rs.RenderStepped:Wait()
+        end
 	end)
 
     local ImageLabel = library:create("ImageButton", {
@@ -342,7 +359,7 @@ end
             SectionButton.MouseEnter:Connect(function()
                 if selected_section == SectionButton then return end
 
-                library:tween(SectionButton, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {TextColor3 = Color3.fromRGB(84, 101, 255)})
+                library:tween(SectionButton, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {TextColor3 = Color3.fromRGB(255, 255, 255)})
             end)
             SectionButton.MouseLeave:Connect(function()
                 if selected_section == SectionButton then return end
@@ -360,7 +377,7 @@ end
             }, SectionButton)
 
             local UIGradient = library:create("UIGradient", {
-                Color = ColorSequence.new{ColorSequenceKeypoint.new(0, Color3.fromRGB(20, 20, 20)), ColorSequenceKeypoint.new(0.5, Color3.fromRGB(150, 150, 150)), ColorSequenceKeypoint.new(1, Color3.fromRGB(20, 20, 20))},
+                Color = ColorSequence.new{ColorSequenceKeypoint.new(0, Color3.fromRGB(32, 33, 38)), ColorSequenceKeypoint.new(0.5, Color3.fromRGB(81, 97, 243)), ColorSequenceKeypoint.new(1, Color3.fromRGB(32, 33, 38))},
             }, SectionDecoration)
 
             local SectionFrame = library:create("Frame", {
@@ -431,13 +448,13 @@ end
                 menu.values[tab.tab_num][section_name][sector_name] = {}
 
                 local Border = library:create("Frame", {
-                    BackgroundColor3 = Color3.fromRGB(0, 0, 0),
-                    BorderColor3 = Color3.fromRGB(40, 40, 40),
+                    BackgroundColor3 = Color3.fromRGB(5, 5, 5),
+                    BorderColor3 = Color3.fromRGB(30, 30, 30),
                     Size = UDim2.new(1, 0, 0, 20),
                 }, actual_side)
 
                 local Container = library:create("Frame", {
-                    BackgroundColor3 = Color3.fromRGB(20, 20, 20),
+                    BackgroundColor3 = Color3.fromRGB(10, 10, 10),
                     BorderSizePixel = 0,
                     Position = UDim2.new(0, 1, 0, 1),
                     Size = UDim2.new(1, -2, 1, -2),
@@ -477,7 +494,7 @@ end
 
                     local Line = library:create("Frame", {
                         Name = "Line",
-                        BackgroundColor3 = Color3.fromRGB(5, 5, 5),
+                        BackgroundColor3 = Color3.fromRGB(25, 25, 25),
                         BorderColor3 = Color3.fromRGB(0, 0, 0),
                         Position = UDim2.new(0.5, 0, 0.5, 0),
                         AnchorPoint = Vector2.new(0.5, 0.5),
@@ -560,7 +577,7 @@ end
                                 library:tween(ToggleFrame, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {BackgroundColor3 = Color3.fromRGB(84, 101, 255)})
                                 library:tween(ToggleText, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {TextColor3 = Color3.fromRGB(255, 255, 255)})
                             else
-                                library:tween(ToggleFrame, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {BackgroundColor3 = Color3.fromRGB(40, 40, 40)})
+                                library:tween(ToggleFrame, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {BackgroundColor3 = Color3.fromRGB(30, 30, 30)})
                                 if not mouse_in then
                                     library:tween(ToggleText, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {TextColor3 = Color3.fromRGB(150, 150, 150)})
                                 end
@@ -611,8 +628,8 @@ end
 
                             local KeybindFrame = library:create("Frame", {
                                 Name = "KeybindFrame",
-                                BackgroundColor3 = Color3.fromRGB(20, 20, 20),
-                                BorderColor3 = Color3.fromRGB(40, 40, 40),
+                                BackgroundColor3 = Color3.fromRGB(10, 10, 10),
+                                BorderColor3 = Color3.fromRGB(30, 30, 30),
                                 Position = UDim2.new(1, 5, 0, 3),
                                 Size = UDim2.new(0, 55, 0, 75),
                                 Visible = false,
@@ -640,7 +657,7 @@ end
                             end)
                             KeybindFrame.MouseLeave:Connect(function()
                                 keybind_in2 = false
-                                library:tween(KeybindFrame, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {BorderColor3 = Color3.fromRGB(40, 40, 40)})
+                                library:tween(KeybindFrame, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {BorderColor3 = Color3.fromRGB(30, 30, 30)})
                             end)
                             uis.InputBegan:Connect(function(input)
 								if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.MouseButton2 and not binding then
@@ -656,7 +673,7 @@ end
                                 Size = UDim2.new(1, 0, 0, 25),
                                 Font = Enum.Font.Ubuntu,
                                 Text = "Always",
-                                TextColor3 = Color3.fromRGB(255, 255, 255),
+                                TextColor3 = Color3.fromRGB(84, 101, 255),
                                 TextSize = 14,
                                 ZIndex = 2,
                             }, KeybindFrame)
@@ -711,7 +728,7 @@ end
                                         if TypeButton2:IsA("UIListLayout") then continue end
                                         library:tween(TypeButton2, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {TextColor3 = Color3.fromRGB(150, 150, 150)})
                                     end
-                                    library:tween(TypeButton, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {TextColor3 = Color3.fromRGB(255, 255, 255)})
+                                    library:tween(TypeButton, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {TextColor3 = Color3.fromRGB(84, 101, 255)})
                                 end)
                             end
 
@@ -783,7 +800,7 @@ end
                                     if TypeButton2.Name ~= extra_value.Type then
                                         library:tween(TypeButton2, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {TextColor3 = Color3.fromRGB(150, 150, 150)})
                                     else
-                                        library:tween(TypeButton2, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {TextColor3 = Color3.fromRGB(255, 255, 255)})
+                                        library:tween(TypeButton2, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {TextColor3 = Color3.fromRGB(84, 101, 255)})
                                     end
                                 end
 
@@ -803,13 +820,6 @@ end
 
                             return keybind
                         end
-                        function element:add_color(color_default, has_transparency, color_callback)
-                            -- Color picker support removed - toggles no longer support color pickers
-                            return {}
-                        end
-                        
-                        -- Original add_color function disabled - kept for reference
-                        --[[
                         function element:add_color(color_default, has_transparency, color_callback)
                             if has_extra then return end
                             has_extra = true
@@ -837,8 +847,8 @@ end
                             local ColorFrame = library:create("Frame", {
                                 Name = "ColorFrame",
                                 Parent = ColorButton,
-                                BackgroundColor3 = Color3.fromRGB(20, 20, 20),
-                                BorderColor3 = Color3.fromRGB(84, 101, 255),
+                                BackgroundColor3 = Color3.fromRGB(10, 10, 10),
+                                BorderColor3 = Color3.fromRGB(0, 0, 0),
                                 Position = UDim2.new(1, 5, 0, 0),
                                 Size = UDim2.new(0, 200, 0, 170),
                                 Visible = false,
@@ -1079,7 +1089,6 @@ end
 
                             return color
                         end
-                        --]]
                     elseif type == "Dropdown" then
                         Border.Size = Border.Size + UDim2.new(0, 0, 0, 45)
 
@@ -1106,7 +1115,7 @@ end
 
                         local DropdownButton = library:create("TextButton", {
                             Name = "DropdownButton",
-                            BackgroundColor3 = Color3.fromRGB(30, 30, 30),
+                            BackgroundColor3 = Color3.fromRGB(25, 25, 25),
                             BorderColor3 = Color3.fromRGB(0, 0, 0),
                             Position = UDim2.new(0, 9, 0, 20),
                             Size = UDim2.new(0, 260, 0, 20),
@@ -1148,7 +1157,7 @@ end
                         local DropdownScroll = library:create("ScrollingFrame", {
                             Name = "DropdownScroll",
                             Active = true,
-                            BackgroundColor3 = Color3.fromRGB(30, 30, 30),
+                            BackgroundColor3 = Color3.fromRGB(25, 25, 25),
                             BorderColor3 = Color3.fromRGB(0, 0, 0),
                             Position = UDim2.new(0, 9, 0, 41),
                             Size = UDim2.new(0, 260, 0, 20),
@@ -1229,7 +1238,7 @@ end
                         for _,v in next, data.options do
                             local Button = library:create("TextButton", {
                                 Name = v,
-                                BackgroundColor3 = Color3.fromRGB(30, 30, 30),
+                                BackgroundColor3 = Color3.fromRGB(25, 25, 25),
                                 BorderColor3 = Color3.fromRGB(0, 0, 0),
                                 BorderSizePixel = 0,
                                 Position = UDim2.new(0, 0, 0, 20),
@@ -1255,7 +1264,7 @@ end
 
                             local Decoration = library:create("Frame", {
                                 Name = "Decoration",
-                                BackgroundColor3 = Color3.fromRGB(200, 200, 200),
+                                BackgroundColor3 = Color3.fromRGB(84, 101, 255),
                                 BorderSizePixel = 0,
                                 Size = UDim2.new(0, 1, 1, 0),
                                 Visible = false,
@@ -1312,7 +1321,7 @@ end
 
                         local DropdownButton = library:create("TextButton", {
                             Name = "DropdownButton",
-                            BackgroundColor3 = Color3.fromRGB(30, 30, 30),
+                            BackgroundColor3 = Color3.fromRGB(25, 25, 25),
                             BorderColor3 = Color3.fromRGB(0, 0, 0),
                             Position = UDim2.new(0, 9, 0, 20),
                             Size = UDim2.new(0, 260, 0, 20),
@@ -1354,7 +1363,7 @@ end
                         local DropdownScroll = library:create("ScrollingFrame", {
                             Name = "DropdownScroll",
                             Active = true,
-                            BackgroundColor3 = Color3.fromRGB(30, 30, 30),
+                            BackgroundColor3 = Color3.fromRGB(25, 25, 25),
                             BorderColor3 = Color3.fromRGB(0, 0, 0),
                             Position = UDim2.new(0, 9, 0, 41),
                             Size = UDim2.new(0, 260, 0, 20),
@@ -1478,7 +1487,7 @@ end
                         for _,v in next, data.options do
                             local Button = library:create("TextButton", {
                                 Name = v,
-                                BackgroundColor3 = Color3.fromRGB(30, 30, 30),
+                                BackgroundColor3 = Color3.fromRGB(25, 25, 25),
                                 BorderColor3 = Color3.fromRGB(0, 0, 0),
                                 BorderSizePixel = 0,
                                 Position = UDim2.new(0, 0, 0, 20),
@@ -1504,7 +1513,7 @@ end
 
                             local Decoration = library:create("Frame", {
                                 Name = "Decoration",
-                                BackgroundColor3 = Color3.fromRGB(200, 200, 200),
+                                BackgroundColor3 = Color3.fromRGB(84, 101, 255),
                                 BorderSizePixel = 0,
                                 Size = UDim2.new(0, 1, 1, 0),
                                 Visible = false,
@@ -1558,7 +1567,7 @@ end
                         local Button = library:create("TextButton", {
                             Name = "Button",
                             AnchorPoint = Vector2.new(0.5, 0.5),
-                            BackgroundColor3 = Color3.fromRGB(30, 30, 30),
+                            BackgroundColor3 = Color3.fromRGB(25, 25, 25),
                             BorderColor3 = Color3.fromRGB(0, 0, 0),
                             Position = UDim2.new(0.5, 0, 0.5, 0),
                             Size = UDim2.new(0, 215, 0, 20),
@@ -1576,7 +1585,7 @@ end
                             library:tween(Button, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {TextColor3 = Color3.fromRGB(150, 150, 150)})
                         end)
                         Button.MouseButton1Down:Connect(function()
-                            Button.BorderColor3 = Color3.fromRGB(200, 200, 200)
+                            Button.BorderColor3 = Color3.fromRGB(84, 101, 255)
                             library:tween(Button, TweenInfo.new(0.6, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {BorderColor3 = Color3.fromRGB(0, 0, 0)})
                             do_callback()
                         end)
@@ -1607,7 +1616,7 @@ end
                         local TextBox = library:create("TextBox", {
                             Name = "Button",
                             AnchorPoint = Vector2.new(0.5, 0.5),
-                            BackgroundColor3 = Color3.fromRGB(30, 30, 30),
+                            BackgroundColor3 = Color3.fromRGB(25, 25, 25),
                             BorderColor3 = Color3.fromRGB(0, 0, 0),
                             Position = UDim2.new(0.5, 0, 0.5, 0),
                             Size = UDim2.new(0, 215, 0, 20),
@@ -1636,7 +1645,7 @@ end
                         end)
                         uis.TextBoxFocused:connect(function()
                             if uis:GetFocusedTextBox() == TextBox then
-                                library:tween(TextBox, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {BorderColor3 = Color3.fromRGB(200, 200, 200)})
+                                library:tween(TextBox, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {BorderColor3 = Color3.fromRGB(84, 101, 255)})
                             end
                         end)
                         uis.TextBoxFocusReleased:connect(function()
@@ -1684,7 +1693,7 @@ end
                         local ScrollFrame = library:create("ScrollingFrame", {
                             Name = "ScrollFrame",
                             Active = true,
-                            BackgroundColor3 = Color3.fromRGB(30, 30, 30),
+                            BackgroundColor3 = Color3.fromRGB(25, 25, 25),
                             BorderColor3 = Color3.fromRGB(0, 0, 0),
                             Position = UDim2.new(0.5, 0, 0, 5),
                             Size = UDim2.new(0, 215, 0, scrollsize * 20),
@@ -1711,7 +1720,7 @@ end
                         for _,v in next, data.options do
                             local Button = library:create("TextButton", {
                                 Name = v,
-                                BackgroundColor3 = Color3.fromRGB(30, 30, 30),
+                                BackgroundColor3 = Color3.fromRGB(25, 25, 25),
                                 BorderColor3 = Color3.fromRGB(0, 0, 0),
                                 BorderSizePixel = 0,
                                 Position = UDim2.new(0, 0, 0, 20),
@@ -1739,7 +1748,7 @@ end
                             local Decoration = library:create("Frame", {
                                 Name = "Decoration",
                                 Parent = Button,
-                                BackgroundColor3 = Color3.fromRGB(200, 200, 200),
+                                BackgroundColor3 = Color3.fromRGB(84, 101, 255),
                                 BorderSizePixel = 0,
                                 Size = UDim2.new(0, 1, 1, 0),
                                 Visible = false,
@@ -1789,7 +1798,7 @@ end
 
                             local Button = library:create("TextButton", {
                                 Name = v,
-                                BackgroundColor3 = Color3.fromRGB(30, 30, 30),
+                                BackgroundColor3 = Color3.fromRGB(25, 25, 25),
                                 BorderColor3 = Color3.fromRGB(0, 0, 0),
                                 BorderSizePixel = 0,
                                 Position = UDim2.new(0, 0, 0, 20),
@@ -1817,7 +1826,7 @@ end
                             local Decoration = library:create("Frame", {
                                 Name = "Decoration",
                                 Parent = Button,
-                                BackgroundColor3 = Color3.fromRGB(200, 200, 200),
+                                BackgroundColor3 = Color3.fromRGB(84, 101, 255),
                                 BorderSizePixel = 0,
                                 Size = UDim2.new(0, 1, 1, 0),
                                 Visible = false,
@@ -1879,24 +1888,9 @@ end
                     elseif type == "Slider" then
                         Border.Size = Border.Size + UDim2.new(0, 0, 0, 35)
 
-                        -- Support both formats:
-                        -- {default = {min = 0, max = 100, default = 20}} (nested format)
-                        -- {default = 20, min = 0, max = 100} (flat format)
-                        local min, max, defaultValue
-                        if type(default) == "table" then
-                            -- Nested format: default is a table with min, max, default
-                            min = default.min or 0
-                            max = default.max or 100
-                            defaultValue = default.default or min
-                        else
-                            -- Flat format: default is a number, min/max are in data
-                            min = data.min or 0
-                            max = data.max or 100
-                            defaultValue = (type(default) == "number") and default or min
-                        end
-                        -- Clamp default value to min/max range
-                        defaultValue = math.clamp(defaultValue, min, max)
-                        value = {Slider = defaultValue}
+                        value = {Slider = default and default.default or 0}
+
+                        local min, max = default and default.min or 0, default and default.max or 100
 
                         local Slider = library:create("Frame", {
                             Name = "Slider",
@@ -1931,7 +1925,7 @@ end
 
                         local SliderButton = library:create("TextButton", {
                             Name = "SliderButton",
-                            BackgroundColor3 = Color3.fromRGB(30, 30, 30),
+                            BackgroundColor3 = Color3.fromRGB(25, 25, 25),
                             BorderColor3 = Color3.fromRGB(0, 0, 0),
                             Position = UDim2.new(0, 9, 0, 20),
                             Size = UDim2.new(0, 260, 0, 10),
@@ -1952,25 +1946,13 @@ end
                             Rotation = 90,
                         }, SliderFrame)
 
-                        -- Helper function to format slider value with appropriate decimal places
-                        local function formatSliderValue(val)
-                            -- If the range is small (like 0-1), use more decimal places
-                            if (max - min) <= 1 then
-                                return string.format("%.2f", val)
-                            elseif (max - min) <= 10 then
-                                return string.format("%.1f", val)
-                            else
-                                return string.format("%.0f", val)
-                            end
-                        end
-
                         local SliderValue = library:create("TextLabel", {
                             Name = "SliderValue",
                             BackgroundTransparency = 1,
                             Position = UDim2.new(0, 69, 0, 6),
                             Size = UDim2.new(0, 200, 0, 9),
                             Font = Enum.Font.Ubuntu,
-                            Text = formatSliderValue(value.Slider),
+                            Text = value.Slider,
                             TextColor3 = Color3.fromRGB(150, 150, 150),
                             TextSize = 14,
                             TextXAlignment = Enum.TextXAlignment.Right,
@@ -1995,10 +1977,9 @@ end
                         SliderButton.MouseButton1Down:Connect(function()
                             SliderFrame.Size = UDim2.new(0, math.clamp(mouse.X - SliderFrame.AbsolutePosition.X, 0, 260), 1, 0)
                         
-                            local val = (((max - min) / 260) * SliderFrame.AbsoluteSize.X) + min
-                            val = math.clamp(val, min, max)
-                            if math.abs(val - value.Slider) > 0.001 then
-                                SliderValue.Text = formatSliderValue(val)
+                            local val = math.floor((((max - min) / 260) * SliderFrame.AbsoluteSize.X) + min)
+                            if val ~= value.Slider then
+                                SliderValue.Text = val
                                 value.Slider = val
                                 do_callback()
                             end
@@ -2008,10 +1989,9 @@ end
                             move_connection = mouse.Move:Connect(function()
                                 SliderFrame.Size = UDim2.new(0, math.clamp(mouse.X - SliderFrame.AbsolutePosition.X, 0, 260), 1, 0)
                         
-                                local val = (((max - min) / 260) * SliderFrame.AbsoluteSize.X) + min
-                                val = math.clamp(val, min, max)
-                                if math.abs(val - value.Slider) > 0.001 then
-                                    SliderValue.Text = formatSliderValue(val)
+                                local val = math.floor((((max - min) / 260) * SliderFrame.AbsoluteSize.X) + min)
+                                if val ~= value.Slider then
+                                    SliderValue.Text = val
                                     value.Slider = val
                                     do_callback()
                                 end
@@ -2020,10 +2000,9 @@ end
                                 if Mouse.UserInputType == Enum.UserInputType.MouseButton1 then
                                     SliderFrame.Size = UDim2.new(0, math.clamp(mouse.X - SliderFrame.AbsolutePosition.X, 0, 260), 1, 0)
                         
-                                    local val = (((max - min) / 260) * SliderFrame.AbsoluteSize.X) + min
-                                    val = math.clamp(val, min, max)
-                                    if math.abs(val - value.Slider) > 0.001 then
-                                        SliderValue.Text = formatSliderValue(val)
+                                    local val = math.floor((((max - min) / 260) * SliderFrame.AbsoluteSize.X) + min)
+                                    if val ~= value.Slider then
+                                        SliderValue.Text = val
                                         value.Slider = val
                                         do_callback()
                                     end
@@ -2047,7 +2026,7 @@ end
 
                             local new_size = (value.Slider - min) / (max-min)
                             SliderFrame.Size = UDim2.new(new_size, 0, 1, 0)
-                            SliderValue.Text = formatSliderValue(value.Slider)
+                            SliderValue.Text = value.Slider
 
                             if cb == nil or not cb then
                                 do_callback()
