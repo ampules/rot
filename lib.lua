@@ -1891,6 +1891,24 @@ end
                         value = {Slider = default and default.default or 0}
 
                         local min, max = default and default.min or 0, default and default.max or 100
+                        
+                        -- Helper function to round to 2 decimal places
+                        local function roundToDecimal(num, decimals)
+                            decimals = decimals or 2
+                            local mult = 10 ^ decimals
+                            return math.floor(num * mult + 0.5) / mult
+                        end
+                        
+                        -- Helper function to format number for display
+                        local function formatNumber(num)
+                            local rounded = roundToDecimal(num, 2)
+                            -- Remove trailing zeros
+                            if rounded == math.floor(rounded) then
+                                return tostring(math.floor(rounded))
+                            else
+                                return string.format("%.2f", rounded):gsub("%.?0+$", "")
+                            end
+                        end
 
                         local Slider = library:create("Frame", {
                             Name = "Slider",
@@ -1952,7 +1970,7 @@ end
                             Position = UDim2.new(0, 69, 0, 6),
                             Size = UDim2.new(0, 200, 0, 9),
                             Font = Enum.Font.Ubuntu,
-                            Text = value.Slider,
+                            Text = formatNumber(value.Slider),
                             TextColor3 = Color3.fromRGB(150, 150, 150),
                             TextSize = 14,
                             TextXAlignment = Enum.TextXAlignment.Right,
@@ -1977,9 +1995,9 @@ end
                         SliderButton.MouseButton1Down:Connect(function()
                             SliderFrame.Size = UDim2.new(0, math.clamp(mouse.X - SliderFrame.AbsolutePosition.X, 0, 260), 1, 0)
                         
-                            local val = math.floor((((max - min) / 260) * SliderFrame.AbsoluteSize.X) + min)
+                            local val = roundToDecimal((((max - min) / 260) * SliderFrame.AbsoluteSize.X) + min)
                             if val ~= value.Slider then
-                                SliderValue.Text = val
+                                SliderValue.Text = formatNumber(val)
                                 value.Slider = val
                                 do_callback()
                             end
@@ -1989,9 +2007,9 @@ end
                             move_connection = mouse.Move:Connect(function()
                                 SliderFrame.Size = UDim2.new(0, math.clamp(mouse.X - SliderFrame.AbsolutePosition.X, 0, 260), 1, 0)
                         
-                                local val = math.floor((((max - min) / 260) * SliderFrame.AbsoluteSize.X) + min)
+                                local val = roundToDecimal((((max - min) / 260) * SliderFrame.AbsoluteSize.X) + min)
                                 if val ~= value.Slider then
-                                    SliderValue.Text = val
+                                    SliderValue.Text = formatNumber(val)
                                     value.Slider = val
                                     do_callback()
                                 end
@@ -2000,9 +2018,9 @@ end
                                 if Mouse.UserInputType == Enum.UserInputType.MouseButton1 then
                                     SliderFrame.Size = UDim2.new(0, math.clamp(mouse.X - SliderFrame.AbsolutePosition.X, 0, 260), 1, 0)
                         
-                                    local val = math.floor((((max - min) / 260) * SliderFrame.AbsoluteSize.X) + min)
+                                    local val = roundToDecimal((((max - min) / 260) * SliderFrame.AbsoluteSize.X) + min)
                                     if val ~= value.Slider then
-                                        SliderValue.Text = val
+                                        SliderValue.Text = formatNumber(val)
                                         value.Slider = val
                                         do_callback()
                                     end
@@ -2026,7 +2044,7 @@ end
 
                             local new_size = (value.Slider - min) / (max-min)
                             SliderFrame.Size = UDim2.new(new_size, 0, 1, 0)
-                            SliderValue.Text = value.Slider
+                            SliderValue.Text = formatNumber(value.Slider)
 
                             if cb == nil or not cb then
                                 do_callback()
