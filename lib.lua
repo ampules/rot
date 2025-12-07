@@ -498,7 +498,12 @@ end
                         callback(value)
                     end
 
-                    local default = data.default
+                    local default
+                    if type(data) == "table" then
+                        default = data.default
+                    else
+                        default = nil
+                    end
 
                     local element = {}
 
@@ -509,7 +514,16 @@ end
                     if type == "Toggle" then
                         Border.Size = Border.Size + UDim2.new(0, 0, 0, 18)
 
-                        value = {Toggle = default and default.Toggle or false}
+                        -- Handle toggle default: can be boolean directly or in table
+                        local toggleDefault = false
+                        if type(data) == "boolean" then
+                            toggleDefault = data
+                        elseif type(data) == "table" and data.Toggle ~= nil then
+                            toggleDefault = data.Toggle
+                        elseif default and type(default) == "table" then
+                            toggleDefault = default.Toggle or false
+                        end
+                        value = {Toggle = toggleDefault}
 
                         local ToggleButton = library:create("TextButton", {
                             Name = "Toggle",
@@ -1871,9 +1885,9 @@ end
                     elseif type == "Slider" then
                         Border.Size = Border.Size + UDim2.new(0, 0, 0, 35)
 
-                        value = {Slider = default and default.default or 0}
+                        value = {Slider = (default and type(default) == "table" and default.default) or 0}
 
-                        local min, max = default and default.min or 0, default and default.max or 100
+                        local min, max = (default and type(default) == "table" and default.min) or 0, (default and type(default) == "table" and default.max) or 100
 
                         local Slider = library:create("Frame", {
                             Name = "Slider",
