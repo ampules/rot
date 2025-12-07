@@ -158,11 +158,6 @@ function library.new(library_title, cfg_location)
 
 		ScreenGui.Enabled = not ScreenGui.Enabled
         menu.open = ScreenGui.Enabled
-
-        while ScreenGui.Enabled do
-            uis.MouseIconEnabled = true
-            rs.RenderStepped:Wait()
-        end
 	end)
 
     local ImageLabel = library:create("ImageButton", {
