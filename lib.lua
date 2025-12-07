@@ -1871,9 +1871,11 @@ end
                     elseif type == "Slider" then
                         Border.Size = Border.Size + UDim2.new(0, 0, 0, 35)
 
-                        value = {Slider = default and default.default or 0}
-
                         local min, max = default and default.min or 0, default and default.max or 100
+                        local defaultValue = default and default.default or min
+                        -- Clamp default value to min/max range
+                        defaultValue = math.clamp(defaultValue, min, max)
+                        value = {Slider = defaultValue}
 
                         local Slider = library:create("Frame", {
                             Name = "Slider",
@@ -1929,13 +1931,25 @@ end
                             Rotation = 90,
                         }, SliderFrame)
 
+                        -- Helper function to format slider value with appropriate decimal places
+                        local function formatSliderValue(val)
+                            -- If the range is small (like 0-1), use more decimal places
+                            if (max - min) <= 1 then
+                                return string.format("%.2f", val)
+                            elseif (max - min) <= 10 then
+                                return string.format("%.1f", val)
+                            else
+                                return string.format("%.0f", val)
+                            end
+                        end
+
                         local SliderValue = library:create("TextLabel", {
                             Name = "SliderValue",
                             BackgroundTransparency = 1,
                             Position = UDim2.new(0, 69, 0, 6),
                             Size = UDim2.new(0, 200, 0, 9),
                             Font = Enum.Font.Ubuntu,
-                            Text = value.Slider,
+                            Text = formatSliderValue(value.Slider),
                             TextColor3 = Color3.fromRGB(150, 150, 150),
                             TextSize = 14,
                             TextXAlignment = Enum.TextXAlignment.Right,
@@ -1960,9 +1974,10 @@ end
                         SliderButton.MouseButton1Down:Connect(function()
                             SliderFrame.Size = UDim2.new(0, math.clamp(mouse.X - SliderFrame.AbsolutePosition.X, 0, 260), 1, 0)
                         
-                            local val = math.floor((((max - min) / 260) * SliderFrame.AbsoluteSize.X) + min)
-                            if val ~= value.Slider then
-                                SliderValue.Text = val
+                            local val = (((max - min) / 260) * SliderFrame.AbsoluteSize.X) + min
+                            val = math.clamp(val, min, max)
+                            if math.abs(val - value.Slider) > 0.001 then
+                                SliderValue.Text = formatSliderValue(val)
                                 value.Slider = val
                                 do_callback()
                             end
@@ -1972,9 +1987,10 @@ end
                             move_connection = mouse.Move:Connect(function()
                                 SliderFrame.Size = UDim2.new(0, math.clamp(mouse.X - SliderFrame.AbsolutePosition.X, 0, 260), 1, 0)
                         
-                                local val = math.floor((((max - min) / 260) * SliderFrame.AbsoluteSize.X) + min)
-                                if val ~= value.Slider then
-                                    SliderValue.Text = val
+                                local val = (((max - min) / 260) * SliderFrame.AbsoluteSize.X) + min
+                                val = math.clamp(val, min, max)
+                                if math.abs(val - value.Slider) > 0.001 then
+                                    SliderValue.Text = formatSliderValue(val)
                                     value.Slider = val
                                     do_callback()
                                 end
@@ -1983,9 +1999,10 @@ end
                                 if Mouse.UserInputType == Enum.UserInputType.MouseButton1 then
                                     SliderFrame.Size = UDim2.new(0, math.clamp(mouse.X - SliderFrame.AbsolutePosition.X, 0, 260), 1, 0)
                         
-                                    local val = math.floor((((max - min) / 260) * SliderFrame.AbsoluteSize.X) + min)
-                                    if val ~= value.Slider then
-                                        SliderValue.Text = val
+                                    local val = (((max - min) / 260) * SliderFrame.AbsoluteSize.X) + min
+                                    val = math.clamp(val, min, max)
+                                    if math.abs(val - value.Slider) > 0.001 then
+                                        SliderValue.Text = formatSliderValue(val)
                                         value.Slider = val
                                         do_callback()
                                     end
@@ -2009,7 +2026,7 @@ end
 
                             local new_size = (value.Slider - min) / (max-min)
                             SliderFrame.Size = UDim2.new(new_size, 0, 1, 0)
-                            SliderValue.Text = value.Slider
+                            SliderValue.Text = formatSliderValue(value.Slider)
 
                             if cb == nil or not cb then
                                 do_callback()
