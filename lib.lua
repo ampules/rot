@@ -498,7 +498,7 @@ end
                         callback(value)
                     end
 
-                    local default = data.default and data.default
+                    local default = data.default
 
                     local element = {}
 
