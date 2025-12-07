@@ -300,7 +300,7 @@ end
             end
             Tab.Visible = true
             selected_tab = TabButton
-                library:tween(TabImage, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {ImageColor3 = Color3.fromRGB(84, 101, 255)})
+            library:tween(TabImage, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {ImageColor3 = Color3.fromRGB(84, 101, 255)})
         end)
         TabButton.MouseEnter:Connect(function()
             if selected_tab == TabButton then return end
@@ -804,6 +804,13 @@ end
                             return keybind
                         end
                         function element:add_color(color_default, has_transparency, color_callback)
+                            -- Color picker support removed - toggles no longer support color pickers
+                            return {}
+                        end
+                        
+                        -- Original add_color function disabled - kept for reference
+                        --[[
+                        function element:add_color(color_default, has_transparency, color_callback)
                             if has_extra then return end
                             has_extra = true
 
@@ -1072,6 +1079,7 @@ end
 
                             return color
                         end
+                        --]]
                     elseif type == "Dropdown" then
                         Border.Size = Border.Size + UDim2.new(0, 0, 0, 45)
 
@@ -1871,8 +1879,21 @@ end
                     elseif type == "Slider" then
                         Border.Size = Border.Size + UDim2.new(0, 0, 0, 35)
 
-                        local min, max = default and default.min or 0, default and default.max or 100
-                        local defaultValue = default and default.default or min
+                        -- Support both formats:
+                        -- {default = {min = 0, max = 100, default = 20}} (nested format)
+                        -- {default = 20, min = 0, max = 100} (flat format)
+                        local min, max, defaultValue
+                        if type(default) == "table" then
+                            -- Nested format: default is a table with min, max, default
+                            min = default.min or 0
+                            max = default.max or 100
+                            defaultValue = default.default or min
+                        else
+                            -- Flat format: default is a number, min/max are in data
+                            min = data.min or 0
+                            max = data.max or 100
+                            defaultValue = (type(default) == "number") and default or min
+                        end
                         -- Clamp default value to min/max range
                         defaultValue = math.clamp(defaultValue, min, max)
                         value = {Slider = defaultValue}
